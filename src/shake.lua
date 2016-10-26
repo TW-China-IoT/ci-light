@@ -1,7 +1,9 @@
 -- shake
+shake = {}
+
 local buzz = require("buzz")
 
-function init()
+function shake.init()
     shake_sensor_pin = 2   -- D2 shake sensor
     gpio.mode(shake_sensor_pin, gpio.INT)
     shake_smooth_width = 300000
@@ -35,4 +37,6 @@ function init()
         end
     end)
 end
+
+return shake
 
