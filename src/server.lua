@@ -1,12 +1,10 @@
---local indicator = require("indicator")
 local config = require("config")
-local buzz = require("buzz")
+local indicator = require("indicator")
 
 -- httpserver
 -- Author: Marcos Kirsch
 
 return function (port)
-    --indicator.flash(indicator.NORMAL)
 
     local s = net.createServer(net.TCP, 10) -- 10 seconds client timeout
     s:listen(port, function (connection)
@@ -41,7 +39,6 @@ return function (port)
             local uri = req.uri
             local fileServeFunction = nil
 
-            print(uri)
             if #(uri.file) > 32 then
                 -- nodemcu-firmware cannot handle long filenames.
                 uri.args = {code = 400, errorString = "Bad Request"}
@@ -64,23 +61,25 @@ return function (port)
                 end
 
                 if not fileExists then
-                    if nil~=string.find(payload, "GET.+/cilight.+status=success.*") then
-                        dofile("server-header.lc")(connection, 200, nil, nil)
-                        buzz.setstatus("success")
-                    elseif nil~=string.find(payload, "GET.+/cilight.+status=fail.*") then
-                        dofile("server-header.lc")(connection, 200, nil, nil)
-                        buzz.setstatus("fail")
+                    if (uri.file == "cilight") then
+                        local status = uri.args["status"]
+                        if (nil ~= status and (status == "success" or status == "fail")) then
+                            uri.args = {code = 200, extension = uri.ext, isGzipped = uri.isGzipped}
+                            fileServeFunction = dofile("server-header.lc")
+                            indicator.setstatus(status)
+                        else
+                            uri.args = {code = 400, errorString = "Bad Request"}
+                            fileServeFunction = dofile("server-error.lc")
+                        end
                     else
-                        uri.args = {code = 400, errorString = "Bad Request"}
+                        uri.args = {code = 404, errorString = "Not Found"}
                         fileServeFunction = dofile("server-error.lc")
                     end
-                    uri.args = {code = 404, errorString = "Not Found"}
-                    fileServeFunction = dofile("server-error.lc")
                 elseif uri.isScript then
                     fileServeFunction = dofile(uri.file)
                 else
                     if allowStatic[method] then
-                        uri.args = {file = uri.file, ext = uri.ext, isGzipped = uri.isGzipped}
+                        uri.args = {code = 200, file = uri.file, ext = uri.ext, isGzipped = uri.isGzipped, extension = uri.ext}
                         fileServeFunction = dofile("server-static.lc")
                     else
                         uri.args = {code = 405, errorString = "Method not supported"}
@@ -95,8 +94,13 @@ return function (port)
                         --    print(k .. ":" .. v)
                         --end
                         config.write(requestData)
-                        dofile("server-header.lc")(connection, 200, nil, nil)
-                        node.restart()
+                        --fileServeFunction = dofile("server-header.lc")(connection, 200, nil, nil)
+                        uri.args = {code = 200, extension = uri.ext, isGzipped = uri.isGzipped}
+                        fileServeFunction = dofile("server-header.lc")
+                        startServing(fileServeFunction, connection, req, uri.args)
+                        tmr.alarm(0, 2000, tmr.ALARM_SINGLE, function()
+                            node.restart()
+                        end)
                     else
                         uri.args = {code = 404, errorString = "Not Found"}
                         fileServeFunction = dofile("server-error.lc")
@@ -189,13 +193,3 @@ return function (port)
     return s
 end
 
--- rest api
-srv = net.createServer(net.TCP)
-srv:listen(80, function(conn)
-    conn:on("receive", function(sck, payload)
-        print("payload:\n", payload)
-    end)
-    conn:on("sent", function(sck)
-        sck:close()
-    end)
-end)

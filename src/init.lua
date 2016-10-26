@@ -7,7 +7,7 @@ print("CI Light Started")
 
 local files = {
     "main",
-    "wifi",
+    "ciwifi",
     "config",
     "server",
     "server-error",

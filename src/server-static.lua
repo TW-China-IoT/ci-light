@@ -5,7 +5,7 @@
 return function (connection, req, args)
     --print("Begin sending:", args.file)
     --print("node.heap(): ", node.heap())
-    dofile("server-header.lc")(connection, 200, args.ext, args.isGzipped)
+    dofile("server-header.lc")(connection, req, args)
     -- Send file in little chunks
     local continue = true
     local size = file.list()[args.file]

@@ -6,7 +6,7 @@ return function (connection, req, args)
 
     -- @TODO: would be nice to use server-header.lua
     local function getHeader(connection, code, errorString, extraHeaders, mimeType)
-        local header = "HTTP/1.0 " .. code .. " " .. errorString .. "\r\nServer: car_box_button-server\r\nContent-Type: " .. mimeType .. "\r\n"
+        local header = "HTTP/1.0 " .. code .. " " .. errorString .. "\r\nServer: ci-light-server\r\nContent-Type: " .. mimeType .. "\r\n"
         for i, extraHeader in ipairs(extraHeaders) do
             header = header .. extraHeader .. "\r\n"
         end

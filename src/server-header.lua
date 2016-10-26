@@ -2,7 +2,7 @@
 -- Part of nodemcu-httpserver, knows how to send an HTTP header.
 -- Author: Marcos Kirsch
 
-return function (connection, code, extension, isGzipped)
+return function (connection, req, args)
 
     local function getHTTPStatusString(code)
         local codez = {[200]="OK", [400]="Bad Request", [404]="Not Found",}
@@ -17,10 +17,10 @@ return function (connection, code, extension, isGzipped)
         if mt[ext] then return mt[ext] else return "text/plain" end
     end
 
-    local mimeType = getMimeType(extension)
+    local mimeType = getMimeType(args.extension)
 
-    connection:send("HTTP/1.0 " .. code .. " " .. getHTTPStatusString(code) .. "\r\nServer: nodemcu-httpserver\r\nContent-Type: " .. mimeType .. "\r\nnCache-Control: private, no-store\r\n")
-    if isGzipped then
+    connection:send("HTTP/1.0 " .. args.code .. " " .. getHTTPStatusString(args.code) .. "\r\nServer: ci-light-server\r\nContent-Type: " .. mimeType .. "\r\nnCache-Control: private, no-store\r\n")
+    if args.isGzipped then
         connection:send("Cache-Control: max-age=2592000\r\nContent-Encoding: gzip\r\n")
     end
     connection:send("Connection: close\r\n\r\n")
