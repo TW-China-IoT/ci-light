@@ -24,5 +24,7 @@ update line in file "src/main.lua" with your AP SSID and password:
 	
 	$ curl http://[ip]/cilight?status=success
 	# green light
+
+    $ curl http://[ip]/getap
 	
 Note: IP address will show on [tty_port] when board starting; or, use "print(wifi.sta.getip())" to get it on a running board.

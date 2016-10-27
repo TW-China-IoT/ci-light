@@ -18,6 +18,7 @@ local files = {
     "server-connection",
     "server-request",
     "server-b64decode",
+    "server-json",
     "indicator",
     "buzz",
     "shake"

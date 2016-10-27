@@ -1,5 +1,6 @@
 local config = require("config")
 local indicator = require("indicator")
+local ciwifi = require("ciwifi")
 
 -- httpserver
 -- Author: Marcos Kirsch
@@ -71,6 +72,10 @@ return function (port)
                             uri.args = {code = 400, errorString = "Bad Request"}
                             fileServeFunction = dofile("server-error.lc")
                         end
+                    elseif (uri.file == "getap") then
+                        aplist = ciwifi.get_ap_list()
+                        uri.args = {code = 200, file = uri.file, data = aplist, extension = "json"}
+                        fileServeFunction = dofile("server-json.lc")
                     else
                         uri.args = {code = 404, errorString = "Not Found"}
                         fileServeFunction = dofile("server-error.lc")

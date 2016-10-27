@@ -5,6 +5,7 @@ local config = require("config")
 local parameter = config.read()
 
 local wifiConfig = {}
+local aplist = {}
 
 function ciwifi.setup()
     -- wifi.STATION         -- station: join a WiFi network
@@ -33,6 +34,9 @@ function ciwifi.setup()
     wifiConfig = nil
     collectgarbage()
 
+    refresh_ap_list()
+    --tmr.alarm(1, 5000, tmr.ALARM_AUTO, refresh_ap_list) 
+
     if config.check() then
         -- STATION
         wifi.sta.config(parameter[config.SSID], parameter[config.PWD])
@@ -52,4 +56,33 @@ function ciwifi.setup()
     end
 end
 
+function listap(t)
+    for k in pairs(aplist) do
+        aplist[k] = nil
+    end
+    collectgarbage()
+    --print("\n"..string.format("%32s","SSID").."\tBSSID\t\t\t\t  RSSI\t\tAUTHMODE\tCHANNEL")
+    for ssid,v in pairs(t) do
+        local authmode, rssi, bssid, channel = string.match(v, "([^,]+),([^,]+),([^,]+),([^,]+)")
+        --print(string.format("%32s",ssid).."\t"..bssid.."\t  "..rssi.."\t\t"..authmode.."\t\t\t"..channel)
+        aplist[ssid] = authmode 
+    end
+    collectgarbage()
+end
+
+function refresh_ap_list()
+    wifi.sta.getap(listap)
+end
+
+function ciwifi.get_ap_list()
+    ok, json = pcall(cjson.encode, aplist)
+    refresh_ap_list()
+    if ok then
+        return json
+    else
+        return "{}"
+    end
+end
+
 return ciwifi
+
