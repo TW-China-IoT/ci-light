@@ -7,7 +7,9 @@
 
 ### Firmware build modules
 Build on https://nodemcu-build.com/
-You do not need to upgrade firmware unless you need other modules 
+
+You do not need to upgrade firmware unless you need other modules
+ 
 With modules: adc cjson crypto encoder file gpio http net node ow pcm pwm spi struct tmr websocket wifi ws2812
 
 ### Config in Code
