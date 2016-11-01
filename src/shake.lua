@@ -19,7 +19,7 @@ function shake.init()
         end
 
         shake_count = shake_count + 1
-        -- print("shake!", shake_count)
+        print("shake!", shake_count)
         shake_start_ticks[shake_count] = now_tick
 
         if shake_count>=shake_window_width then

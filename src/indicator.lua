@@ -10,11 +10,15 @@ end
 
 function indicator.setstatus(status)
     if status=="fail" then
-        ws2812.write(string.char(255, 0, 0, 0, 255, 0, 0, 0))
+        buffer=ws2812.newBuffer(16, 3)
+        buffer:fill(30, 255, 0)
+        ws2812.write(buffer)
         gpio.write(light_pin, gpio.LOW)
         buzz.startbuzz()
     elseif status=="success" then
-        ws2812.write(string.char(0, 255, 0, 0, 0, 255, 0, 0))
+        buffer=ws2812.newBuffer(16, 3)
+        buffer:fill(255, 255, 255)
+        ws2812.write(buffer)
         gpio.write(light_pin, gpio.HIGH)
         buzz.stopbuzz()
     else
