@@ -1,10 +1,7 @@
 print("\nCI Light Started\n\n")
-
--- indicate device is booting
 print("\nbooting\n\n")
 
 local indicator = require("indicator")
-indicator.setstatus("booting")
 
 -- boot main.lc with 3 seconds delay
 tmr.alarm(0, 3000, tmr.ALARM_SINGLE, function()
@@ -19,6 +16,8 @@ tmr.alarm(1, 300, tmr.ALARM_AUTO, function()
         tmr.unregister(0)
         print("stop booting")
         tmr.unregister(1)
+
+        indicator.setstatus("maintenance")
     end
 end)
 
