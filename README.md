@@ -20,8 +20,10 @@ update line in file "src/main.lua" with your AP SSID and password:
 
 ### Upload to Board
 1. pip install nodemcu-uploader
-2. nodemcu-uploader --port [tty_port] upload src/*.lua
-3. nodemcu-uploader --port [tty_port] node restart
+2. cd src
+3. nodemcu-uploader --port [tty_port] upload index.html dingdong_8k.u8
+3. nodemcu-uploader --port [tty_port] upload *.lua --compile
+4. nodemcu-uploader --port [tty_port] node restart
 
 ### Test
 	$ curl http://[ip]/cilight?status=fail

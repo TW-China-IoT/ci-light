@@ -1,49 +1,27 @@
---tmr.alarm(0, 3000, tmr.ALARM_SINGLE, function()
-	--require "main"
---end)
+print("\nCI Light Started\n\n")
 
-print("\n")
-print("CI Light Started")
+-- indicate device is booting
+print("\nbooting\n\n")
 
-local files = {
-    "main",
-    "ciwifi",
-    "config",
-    "server",
-    "server-error",
-    "server-basicauth",
-    "server-conf",
-    "server-static",
-    "server-header",
-    "server-connection",
-    "server-request",
-    "server-b64decode",
-    "server-json",
-    "indicator",
-    "buzz",
-    "shake"
-}
-local luafile = nil
-local exefile = "main"
+local indicator = require("indicator")
+indicator.setstatus("booting")
 
-for i, f in ipairs(files) do
-    luafile = f..".lua"
-    if file.open(luafile) then
-        file.close()
-        print("Compile File:"..luafile)
-        node.compile(luafile)
-        print("Remove File:"..luafile)
-        file.remove(luafile)
+-- boot main.lc with 3 seconds delay
+tmr.alarm(0, 3000, tmr.ALARM_SINGLE, function()
+    tmr.unregister(1)
+    dofile("main.lc")
+end)
+
+-- if GPIO0 is low, then stop booting
+gpio.mode(3, gpio.INPUT)    -- D3 GPIO0
+tmr.alarm(1, 300, tmr.ALARM_AUTO, function()
+    if gpio.read(3) == 0 then
+        tmr.unregister(0)
+        print("stop booting")
+        tmr.unregister(1)
     end
-end
+end)
 
-if file.open(exefile..".lc") then
-    dofile(exefile..".lc")
-else
-    print(exefile..".lc not exist")
-end
-
-files = nil
-luafile = nil
-exefile = nil
+-- clean
+indicator = nil
 collectgarbage()

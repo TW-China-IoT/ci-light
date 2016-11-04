@@ -21,6 +21,11 @@ function indicator.setstatus(status)
         ws2812.write(buffer)
         gpio.write(light_pin, gpio.HIGH)
         buzz.stopbuzz()
+    elseif status=="booting" then
+        buffer=ws2812.newBuffer(16, 3)
+        buffer:fill(0, 0, 255)
+        ws2812.write(buffer)
+        gpio.write(light_pin, gpio.LOW)
     else
         print("unknow status:", status)
     end
