@@ -19,11 +19,21 @@ update line in file "src/main.lua" with your AP SSID and password:
 	wifi.sta.config("your_ssid","your_password")
 
 ### Upload to Board
+You have two ways to upload:
+
+#### Use nodemcu-uploader to update manually
 1. pip install nodemcu-uploader
 2. cd src
 3. nodemcu-uploader --port [tty_port] upload index.html dingdong_8k.u8
 3. nodemcu-uploader --port [tty_port] upload *.lua --compile
 4. nodemcu-uploader --port [tty_port] node restart
+
+#### Use makefile for less steps
+* make upload FILE:=<file>  to upload a specific file (i.e make upload FILE:=init.lua)
+* make upload_http          to upload files to be served
+* make upload_server        to upload the server code and init.lua
+* make terminal             enter terminal
+* make restart              restart node
 
 ### Test
 	$ curl http://[ip]/cilight?status=fail
