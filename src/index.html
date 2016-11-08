@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-   <meta charset="utf-8">
-   <title>Configure car box</title>
+    <meta charset="utf-8">
+    <title>CI Light Wifi Configuration</title>
 </head>
+
 <body>
     <form action="configuration" method="post">
-        <p>SSID: <input type="text" name="ssid" /></p>
+        <p>Select SSID:</p>
+        <select id="ssid" name="ssid"></select>
         <p>Password: <input type="text" name="pwd" /></p>
+        <input type="button" value="Refresh" onClick="window.location.reload()">
         <input type="submit" value="Submit" />
     </form>
+    <script lang="javascript" src="app.js"></script>
 </body>
+
 </html>

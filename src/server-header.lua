@@ -19,7 +19,7 @@ return function (connection, req, args)
 
     local mimeType = getMimeType(args.extension)
 
-    connection:send("HTTP/1.0 " .. args.code .. " " .. getHTTPStatusString(args.code) .. "\r\nServer: ci-light-server\r\nContent-Type: " .. mimeType .. "\r\nnCache-Control: private, no-store\r\n")
+    connection:send("HTTP/1.0 " .. args.code .. " " .. getHTTPStatusString(args.code) .. "\r\nServer: ci-light-server\r\nContent-Type: " .. mimeType .. "\r\nnCache-Control: private, no-store\r\nAccess-Control-Allow-Origin: *\r\n")
     if args.isGzipped then
         connection:send("Cache-Control: max-age=2592000\r\nContent-Encoding: gzip\r\n")
     end
