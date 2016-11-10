@@ -29,11 +29,25 @@ You have two ways to upload:
 4. nodemcu-uploader --port [tty_port] node restart
 
 #### Use makefile for less steps
-* make upload FILE:=<file>  to upload a specific file (i.e make upload FILE:=init.lua)
-* make upload_http          to upload files to be served
-* make upload_server        to upload the server code and init.lua
-* make terminal             enter terminal
-* make restart              restart node
+* to upload a specific file (i.e make upload FILE:=init.lua)
+
+	make upload FILE:=<file>  
+
+* to upload files to be served
+
+	make upload_http
+
+* to upload the server code and init.lua
+
+	make upload_server
+
+* enter terminal
+
+	make terminal
+
+* restart node
+
+	make restart              
 
 ### Test
 	$ curl http://[ip]/cilight?status=fail

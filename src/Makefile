@@ -4,7 +4,7 @@
 # Path to nodemcu-uploader (https://github.com/kmpm/nodemcu-uploader)
 NODEMCU-UPLOADER=nodemcu-uploader
 # Serial port
-PORT=/dev/ttyUSB0
+PORT=/dev/tty.wchusbserial1420
 SPEED=115200
 
 ######################################################################
@@ -12,7 +12,8 @@ SPEED=115200
 ######################################################################
 HTTP_FILES := \
    index.html \
-   app.js
+   app.js \
+   style.css
    
 LUA_FILES := $(wildcard *.lua)
 
@@ -26,14 +27,18 @@ usage:
 # Upload one files only
 upload:
 	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) upload $(FILE) --compile
+	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) node restart
 
 # Upload HTTP files only
 upload_http: $(HTTP_FILES)
 	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) upload $(foreach f, $^, $(f))
+	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) node restart
 
 # Upload httpserver lua files (init and server module)
 upload_server: $(LUA_FILES)
+	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) file remove init.lua
 	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) upload $(foreach f, $^, $(f)) --compile
+	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) node restart
 
 terminal:
 	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) terminal
