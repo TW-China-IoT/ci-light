@@ -6,6 +6,8 @@ local parameter = config.read()
 
 local wifiConfig = {}
 local aplist = {}
+local connected = false
+local ip = nil
 
 function ciwifi.setup()
     -- wifi.STATION         -- station: join a WiFi network
@@ -44,14 +46,17 @@ function ciwifi.setup()
         wifi.eventmon.register(wifi.eventmon.STA_CONNECTED, function(T) 
             print("\n\tSTA - CONNECTED".."\n\tSSID: "..T.SSID.."\n\tBSSID: "..T.BSSID.."\n\tChannel: "..T.channel)
             collectgarbage()
+            connected = true
         end)
         wifi.eventmon.register(wifi.eventmon.STA_DISCONNECTED, function(T) 
             print("\n\tSTA - DISCONNECTED".."\n\tSSID: "..T.SSID.."\n\tBSSID: "..T.BSSID.."\n\treason: "..T.reason)
             collectgarbage()
+            connected = false
         end)
         wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function(T) 
             print("\n\tSTA - GOT IP".."\n\tStation IP: "..T.IP.."\n\tSubnet mask: "..T.netmask.."\n\tGateway IP: "..T.gateway)
             collectgarbage()
+            ip = T.IP
         end)
     end
 end
@@ -78,11 +83,28 @@ function ciwifi.get_ap_list()
     ok, json = pcall(cjson.encode, aplist)
     refresh_ap_list()
     if ok then
+        collectgarbage()
         return json
     else
+        collectgarbage()
         return "{}"
     end
 end
 
-return ciwifi
+function ciwifi.is_connected()
+    if connected then
+        return '{"connected": "true"}'
+    else
+        return '{"connected: "false"}'
+    end
+end
 
+function ciwifi.get_ip()
+    if ip then
+        return '{"ip": "'..ip..'"}'
+    else
+        return '{}'
+    end
+end
+
+return ciwifi

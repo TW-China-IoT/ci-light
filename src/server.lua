@@ -76,6 +76,14 @@ return function (port)
                         aplist = ciwifi.get_ap_list()
                         uri.args = {code = 200, file = uri.file, data = aplist, extension = "json"}
                         fileServeFunction = dofile("server-json.lc")
+                    elseif (uri.file == "getip") then
+                        aplist = ciwifi.get_ip()
+                        uri.args = {code = 200, file = uri.file, data = aplist, extension = "json"}
+                        fileServeFunction = dofile("server-json.lc")
+                    elseif (uri.file == "getconnected") then
+                        aplist = ciwifi.is_connected()
+                        uri.args = {code = 200, file = uri.file, data = aplist, extension = "json"}
+                        fileServeFunction = dofile("server-json.lc")
                     else
                         uri.args = {code = 404, errorString = "Not Found"}
                         fileServeFunction = dofile("server-error.lc")
@@ -113,6 +121,7 @@ return function (port)
                 end
             end
             startServing(fileServeFunction, connection, req, uri.args)
+            collectgarbage()
         end
 
         local function onReceive(connection, payload)
@@ -159,6 +168,7 @@ return function (port)
                 end
                 startServing(fileServeFunction, connection, req, args)
             end
+            collectgarbage()
         end
 
         local function onSent(connection, payload)
