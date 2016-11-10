@@ -12,7 +12,7 @@ SPEED=115200
 ######################################################################
 HTTP_FILES := \
    index.html \
-   app.js \
+   app.min.js \
    style.css
    
 LUA_FILES := $(wildcard *.lua)
@@ -31,6 +31,7 @@ upload:
 
 # Upload HTTP files only
 upload_http: $(HTTP_FILES)
+	uglifyjs app.js -mc -o app.min.js
 	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) upload $(foreach f, $^, $(f))
 	$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) node restart
 

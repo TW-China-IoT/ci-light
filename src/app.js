@@ -1,6 +1,6 @@
 function refreshap() {
     var request = new XMLHttpRequest();
-    request.open('GET', 'http://192.168.100.1/getap', true);
+    request.open('GET', '/getap', true);
 
     request.onload = function () {
         if (request.status >= 200 && request.status < 400) {
@@ -26,7 +26,7 @@ function refreshap() {
 
 function refreship() {
     var request = new XMLHttpRequest();
-    request.open('GET', 'http://192.168.100.1/getip', true);
+    request.open('GET', '/getip', true);
 
     request.onload = function () {
         if (request.status >= 200 && request.status < 400) {
